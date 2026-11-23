@@ -1,0 +1,32 @@
+name: Deploy to EdgeOne Makers
+
+# push 到 main 分支时自动构建并部署到 EdgeOne（Pages/Makers）
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to EdgeOne
+        uses: TencentEdgeOne/edgeone-pages-action@v1
+        with:
+          token: ${{ secrets.EDGEONE_API_TOKEN }}
+          project-name: "love-travel-agent"
+          build-path: "./dist"
